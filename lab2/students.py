@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 
-def preprocess(students: pd.DataFrame) -> pd.DataFrame:
+def preprocess(students: pd.DataFrame, drop_g1g2=False) -> pd.DataFrame:
     variables = {
         'binary': [
             'school',
@@ -66,14 +66,17 @@ def preprocess(students: pd.DataFrame) -> pd.DataFrame:
         scaled = students[variable].map(lambda x: (x - lower) / (higher - lower)).astype(float)
         preprocessed[variable] = scaled
 
+    if drop_g1g2:
+        preprocessed.drop(columns=['G1', 'G2'], inplace=True)
+
     return preprocessed
 
 
-def data() -> tuple[tuple[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]]:
+def data(drop_g1g2=False) -> tuple[tuple[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]]:
     test_ratio = 0.2
 
     students = pd.read_csv('../dataset/students.csv', sep=';')
-    preprocessed = preprocess(students)
+    preprocessed = preprocess(students, drop_g1g2)
 
     array = preprocessed.to_numpy()
 

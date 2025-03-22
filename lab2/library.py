@@ -8,7 +8,7 @@ def mean_bias_error(y_true, y_pred):
 
 activation = 'relu'
 
-(X_train, Y_train), (X_test, Y_test) = students.data()
+(X_train, Y_train), (X_test, Y_test) = students.data(drop_g1g2=True)
 features = X_train.shape[1]
 
 model = keras.Sequential(
