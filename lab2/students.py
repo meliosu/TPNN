@@ -1,8 +1,6 @@
 import numpy as np
 import pandas as pd
 
-from typing import Tuple
-
 
 def preprocess(students: pd.DataFrame) -> pd.DataFrame:
     variables = {
@@ -71,7 +69,7 @@ def preprocess(students: pd.DataFrame) -> pd.DataFrame:
     return preprocessed
 
 
-def data() -> Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
+def data() -> tuple[tuple[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]]:
     test_ratio = 0.2
 
     students = pd.read_csv('../dataset/students.csv', sep=';')
