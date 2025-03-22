@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 
-def preprocess(students: pd.DataFrame, drop_g1g2=False) -> pd.DataFrame:
+def preprocess(students: pd.DataFrame, drop: [str] = None) -> pd.DataFrame:
     variables = {
         'binary': [
             'school',
@@ -27,56 +27,65 @@ def preprocess(students: pd.DataFrame, drop_g1g2=False) -> pd.DataFrame:
             'guardian',
         ],
 
-        'numeric': {
-            'age': (15, 22),
-            'Medu': (0, 4),
-            'Fedu': (0, 4),
-            'traveltime': (0, 4),
-            'studytime': (0, 4),
-            'failures': (1, 4),
-            'famrel': (1, 5),
-            'freetime': (1, 5),
-            'goout': (1, 5),
-            'Dalc': (1, 5),
-            'Walc': (1, 5),
-            'health': (1, 5),
-            'absences': (0, 93),
-            'G1': (0, 20),
-            'G2': (0, 20),
-            'G3': (0, 20),
-        },
+        'numeric': [
+            ['age', (15, 22)],
+            ['Medu', (0, 4)],
+            ['Fedu', (0, 4)],
+            ['traveltime', (0, 4)],
+            ['studytime', (0, 4)],
+            ['failures', (1, 4)],
+            ['famrel', (1, 5)],
+            ['freetime', (1, 5)],
+            ['goout', (1, 5)],
+            ['Dalc', (1, 5)],
+            ['Walc', (1, 5)],
+            ['health', (1, 5)],
+            ['absences', (0, 93)],
+            ['G1', (0, 20)],
+            ['G2', (0, 20)],
+            ['G3', (0, 20)],
+        ],
     }
+
+    if drop is None:
+        drop = []
 
     preprocessed = pd.DataFrame()
 
     for variable in variables['binary']:
+        if variable in drop:
+            continue
+
         unique = students[variable].unique()
         mapping = {unique[0]: 0.0, unique[1]: 1.0}
         preprocessed[variable] = students[variable].map(mapping)
 
     for variable in variables['categorical']:
+        if variable in drop:
+            continue
+
         onehot = pd.get_dummies(students[variable], dtype=float)
 
         for col in onehot:
             preprocessed[col] = onehot[col]
 
-    for variable, bounds in variables['numeric'].items():
+    for variable, bounds in variables['numeric']:
+        if variable in drop:
+            continue
+
         lower = bounds[0]
         higher = bounds[1]
         scaled = students[variable].map(lambda x: (x - lower) / (higher - lower)).astype(float)
         preprocessed[variable] = scaled
 
-    if drop_g1g2:
-        preprocessed.drop(columns=['G1', 'G2'], inplace=True)
-
     return preprocessed
 
 
-def data(drop_g1g2=False) -> tuple[tuple[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]]:
+def data(drop: [str] = None) -> tuple[tuple[np.ndarray, np.ndarray], tuple[np.ndarray, np.ndarray]]:
     test_ratio = 0.2
 
     students = pd.read_csv('../dataset/students.csv', sep=';')
-    preprocessed = preprocess(students, drop_g1g2)
+    preprocessed = preprocess(students, drop)
 
     array = preprocessed.to_numpy()
 
