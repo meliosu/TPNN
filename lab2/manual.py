@@ -67,17 +67,23 @@ class MBE(Metric):
 
 
 class Layer:
-    def __init__(self, input_size, output_size, activation, weights=None, biases=None):
+    def __init__(self, input_size, output_size, activation, weights=None, biases=None, seed=None):
         self.input_size = input_size
         self.output_size = output_size
         self.activation = activation
         
         if weights is None:
+            if seed is not None:
+                np.random.seed(seed)
+
             self.weights = np.random.randn(input_size, output_size) * np.sqrt(1 / input_size)
         else:
             self.weights = weights
         
         if biases is None:
+            if seed is not None:
+                np.random.seed(seed)
+
             self.biases = np.zeros((1, output_size))
         else:
             self.biases = biases
@@ -96,7 +102,7 @@ class Layer:
 
 
 class MLP:
-    def __init__(self, layer_sizes, activations=None, loss=None, weights=None, biases=None):
+    def __init__(self, layer_sizes, activations=None, loss=None, weights=None, biases=None, seed=None):
         self.layers = []
         self.loss = loss if loss is not None else MSE()
         
@@ -115,7 +121,12 @@ class MLP:
             layer_weights = None if weights is None else weights[i]
             layer_biases = None if biases is None else biases[i]
             
-            layer = Layer(input_size, output_size, activation, layer_weights, layer_biases)
+            # If seed is provided, create a unique seed for each layer
+            layer_seed = None
+            if seed is not None:
+                layer_seed = seed + i
+            
+            layer = Layer(input_size, output_size, activation, layer_weights, layer_biases, layer_seed)
             self.layers.append(layer)
     
     def forward(self, x):

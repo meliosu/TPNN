@@ -4,7 +4,8 @@ import numpy as np
 from manual import MLP, ReLU, Sigmoid, MSE, MAE, MBE
 import students
 
-load = True
+load = False
+seed = 42
 
 
 def load_weights_from_h5(filename):
@@ -48,7 +49,8 @@ model = MLP(
     activations=activations,
     loss=loss,
     weights=weights,
-    biases=biases
+    biases=biases,
+    seed=seed
 )
 
 if not load:
