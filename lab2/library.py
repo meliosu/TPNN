@@ -1,12 +1,13 @@
 import keras
 import students
 
+activation = 'relu'
+save = True
+
 
 def mean_bias_error(y_true, y_pred):
     return keras.ops.mean(y_pred - y_true)
 
-
-activation = 'relu'
 
 (X_train, Y_train), (X_test, Y_test) = students.data()
 features = X_train.shape[1]
@@ -40,6 +41,9 @@ model.fit(
     validation_data=(X_test, Y_test),
     validation_freq=10,
 )
+
+if save:
+    model.save_weights('MLP.weights.h5')
 
 score = model.evaluate(X_test, Y_test)
 
