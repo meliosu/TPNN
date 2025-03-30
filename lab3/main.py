@@ -16,7 +16,10 @@ from manual import (
 from common import compare_models
 
 if __name__ == "__main__":
-    df = data()
+    # Data parameters
+    data_fraction = 0.01  # Use only 10% of the dataset
+    
+    df = data(data_fraction=data_fraction)
     print(f"Dataset shape: {df.shape}")
     print(f"Columns: {df.columns.tolist()}")
     
@@ -24,7 +27,7 @@ if __name__ == "__main__":
     sequence_length = 60
     epochs = 1
     batch_size = 128
-    learning_rate = 0.01
+    learning_rate = 0.025
     eval_frequency = 10
     
     X_train, X_test, y_train, y_test, scaler = prepare_data(
