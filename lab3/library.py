@@ -161,5 +161,12 @@ def train_and_evaluate(
         'mse': mse,
         'rmse': rmse,
         'mae': mae,
-        'eval_callback': eval_callback
+        'eval_callback': eval_callback,
+        # Add these keys from the eval_callback to make compatible with compare_models
+        'batch_numbers': eval_callback.batch_numbers,
+        'train_losses': eval_callback.train_losses,
+        'val_losses': eval_callback.val_losses,
+        'mse_values': eval_callback.mse_values,
+        'rmse_values': eval_callback.rmse_values,
+        'mae_values': eval_callback.mae_values
     }
