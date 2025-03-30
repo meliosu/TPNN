@@ -4,7 +4,7 @@ from sklearn.preprocessing import MinMaxScaler
 from typing import Tuple
 
 
-def data() -> pd.DataFrame:
+def data(data_fraction: float = 1.0) -> pd.DataFrame:
     dataset = pd.read_csv(
         '../individual_electric/household_power_consumption.csv',
         sep=';',
@@ -20,7 +20,11 @@ def data() -> pd.DataFrame:
 
     for column in dataset.columns:
         dataset[column] = dataset[column].ffill()
-
+    
+    # Sample a fraction of the data if data_fraction < 1.0
+    if data_fraction < 1.0:
+        dataset = dataset[:int(len(dataset) * data_fraction)]
+    
     return dataset
 
 
