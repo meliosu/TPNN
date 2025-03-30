@@ -15,4 +15,7 @@ def data() -> pd.DataFrame:
 
     dataset.drop(columns='Time', inplace=True)
 
+    for column in dataset.columns:
+        dataset[column] = dataset[column].ffill()
+
     return dataset
