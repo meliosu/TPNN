@@ -18,30 +18,14 @@ def clip_gradients(gradients, threshold=5.0):
     return gradients
 
 class Optimizer:
-    """Simple SGD optimizer with momentum and learning rate decay"""
-    def __init__(self, learning_rate=0.01, momentum=0.9, decay=0.0):
+    """Simple SGD optimizer"""
+    def __init__(self, learning_rate=0.01):
         self.learning_rate = learning_rate
-        self.momentum = momentum
-        self.decay = decay
-        self.iterations = 0
-        self.velocity = {}
-        
-    def initialize(self, params):
-        """Initialize velocity for each parameter"""
-        for i, param in enumerate(params):
-            self.velocity[i] = np.zeros_like(param)
             
     def update(self, params, grads):
-        """Update parameters using momentum"""
-        if not self.velocity:
-            self.initialize(params)
-            
-        self.iterations += 1
-        lr = self.learning_rate * (1.0 / (1.0 + self.decay * self.iterations))
-        
-        for i, (param, grad) in enumerate(zip(params, grads)):
-            self.velocity[i] = self.momentum * self.velocity[i] - lr * grad
-            param += self.velocity[i]
+        """Update parameters using vanilla SGD"""
+        for param, grad in zip(params, grads):
+            param -= self.learning_rate * grad
 
 class SimpleRNN:
     def __init__(self, input_size, hidden_size, output_size, learning_rate=0.01):
@@ -62,7 +46,7 @@ class SimpleRNN:
         self.by = np.zeros((output_size, 1))
         
         # Initialize optimizer
-        self.optimizer = Optimizer(learning_rate=learning_rate, momentum=0.9, decay=0.0001)
+        self.optimizer = Optimizer(learning_rate=learning_rate)
 
     def forward(self, inputs_batch):
         """Vectorized forward pass handling a batch of sequences"""
@@ -174,7 +158,7 @@ class GRU:
         self.by = np.zeros((output_size, 1))
         
         # Initialize optimizer
-        self.optimizer = Optimizer(learning_rate=learning_rate, momentum=0.9, decay=0.0001)
+        self.optimizer = Optimizer(learning_rate=learning_rate)
 
     def forward(self, inputs_batch):
         """Vectorized forward pass for GRU"""
@@ -337,7 +321,7 @@ class LSTM:
         self.by = np.zeros((output_size, 1))
         
         # Initialize optimizer
-        self.optimizer = Optimizer(learning_rate=learning_rate, momentum=0.9, decay=0.0001)
+        self.optimizer = Optimizer(learning_rate=learning_rate)
 
     def forward(self, inputs_batch):
         """Vectorized forward pass for LSTM"""
@@ -588,5 +572,7 @@ def train_numpy_model(model, X_train, y_train, X_test, y_test, scaler, epochs=10
         'val_losses': val_losses,
         'mse_values': mse_values,
         'rmse_values': rmse_values,
+        'mae_values': mae_values,  # Added this line to include MAE history
         'batch_numbers': batch_numbers
     }
+

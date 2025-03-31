@@ -14,10 +14,14 @@ from manual import (
     train_numpy_model
 )
 from common import compare_models
+from plotting import ensure_plot_dir, plot_training_metrics, plot_final_comparison
 
 if __name__ == "__main__":
+    # Create plots directory at the start
+    plot_dir = ensure_plot_dir("plots")
+    
     # Data parameters
-    data_fraction = 0.01  # Use only 10% of the dataset
+    data_fraction = 0.01  # Use only 1% of the dataset
     
     df = data(data_fraction=data_fraction)
     print(f"Dataset shape: {df.shape}")
@@ -88,25 +92,18 @@ if __name__ == "__main__":
         np_results[name] = result
         print(f"{name} - MSE: {result['mse']:.4f}, RMSE: {result['rmse']:.4f}, MAE: {result['mae']:.4f}")
     
-    # Compare TensorFlow models
-    print("\nComparing TensorFlow models:")
-    compare_models(tf_results)
+    # Generate and save plots
     
-    # Compare NumPy models
-    print("\nComparing NumPy models:")
-    compare_models(np_results)
+    # Plot 1: TensorFlow models training/validation metrics
+    print("\nGenerating TensorFlow models plot...")
+    plot_training_metrics(tf_results, 'TensorFlow', plot_dir)
     
-    # Compare best models from each implementation
-    best_models = {}
-    for name, result in tf_results.items():
-        if name == 'TF_RNN':  # Choose your best TF model
-            best_models['TensorFlow'] = result
+    # Plot 2: NumPy models training/validation metrics
+    print("\nGenerating NumPy models plot...")
+    plot_training_metrics(np_results, 'NumPy', plot_dir)
     
-    for name, result in np_results.items():
-        if name == 'NP_RNN':  # Choose your best NumPy model
-            best_models['NumPy'] = result
+    # Plot 4: Final comparison of all models
+    print("\nGenerating final comparison plot...")
+    plot_final_comparison(tf_results, np_results, plot_dir)
     
-    print("\nComparing best models from each implementation:")
-    compare_models(best_models)
-    
-    print("\nTraining and evaluation completed.")
+    print(f"\nAll plots have been saved to the '{plot_dir}' directory.")
