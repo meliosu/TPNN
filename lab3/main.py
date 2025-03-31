@@ -28,7 +28,7 @@ if __name__ == "__main__":
     epochs = 1
     batch_size = 128
     learning_rate = 0.025
-    eval_frequency = 10
+    eval_frequency = 20
     
     X_train, X_test, y_train, y_test, scaler = prepare_data(
         df, 
