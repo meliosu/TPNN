@@ -6,12 +6,12 @@ def main():
     X_train, y_train, X_test, y_test = load_data()
     
     # TensorFlow implementation
-    # print("Training with TensorFlow implementation:")
-    # lenet5_model = create_tf_lenet5_model()
-    # trained_model, history = train_model(lenet5_model, X_train, y_train, X_test, y_test, epochs=2)
-    #
-    # test_loss, test_acc = trained_model.evaluate(X_test, y_test)
-    # print(f"TensorFlow Test accuracy: {test_acc:.4f}")
+    print("Training with TensorFlow implementation:")
+    lenet5_model = create_tf_lenet5_model()
+    trained_model, history = train_model(lenet5_model, X_train, y_train, X_test, y_test, epochs=2)
+
+    test_loss, test_acc = trained_model.evaluate(X_test, y_test)
+    print(f"TensorFlow Test accuracy: {test_acc:.4f}")
     
     # Manual implementation
     print("\nTraining with manual NumPy implementation:")
