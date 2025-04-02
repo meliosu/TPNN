@@ -275,33 +275,60 @@ class Sequential:
                         layer.params[param_name] -= learning_rate * layer.grads[param_name]
     
     def fit(self, X, y, epochs=10, batch_size=32, learning_rate=0.01, validation_data=None):
-        history = {'loss': [], 'accuracy': [], 'val_loss': [], 'val_accuracy': []}
+        history = {
+            'loss': [], 'accuracy': [], 'val_loss': [], 'val_accuracy': [],
+            'batch_loss': [], 'batch_accuracy': [], 'batch_val_loss': [], 
+            'batch_val_accuracy': [], 'batch': []
+        }
         samples = X.shape[0]
+        batch_counter = 0
         
         for epoch in range(epochs):
             indices = np.random.permutation(samples)
             X_shuffled = X[indices]
             y_shuffled = y[indices]
             
-            loss = 0
-            correct = 0
+            epoch_loss = 0
+            epoch_correct = 0
             
             for i in range(0, samples, batch_size):
+                print(f"batch {i}")
+
+                batch_counter += 1
                 end = min(i + batch_size, samples)
                 X_batch = X_shuffled[i:end]
                 y_batch = y_shuffled[i:end]
                 
                 y_pred = self.forward(X_batch)
                 
-                loss += categorical_crossentropy(y_batch, y_pred) * (end - i)
-                correct += np.sum(np.argmax(y_pred, axis=1) == np.argmax(y_batch, axis=1))
+                batch_loss = categorical_crossentropy(y_batch, y_pred)
+                batch_correct = np.sum(np.argmax(y_pred, axis=1) == np.argmax(y_batch, axis=1))
+                batch_accuracy = batch_correct / (end - i)
+                
+                epoch_loss += batch_loss * (end - i)
+                epoch_correct += batch_correct
                 
                 dA = y_pred - y_batch
                 self.backward(dA)
                 self.update_params(learning_rate)
+                
+                # Record metrics every 100 batches
+                if batch_counter % 100 == 0:
+                    history['batch_loss'].append(batch_loss)
+                    history['batch_accuracy'].append(batch_accuracy)
+                    history['batch'].append(batch_counter)
+                    
+                    if validation_data:
+                        X_val, y_val = validation_data
+                        y_val_pred = self.forward(X_val)
+                        val_loss = categorical_crossentropy(y_val, y_val_pred)
+                        val_accuracy = np.mean(np.argmax(y_val_pred, axis=1) == np.argmax(y_val, axis=1))
+                        history['batch_val_loss'].append(val_loss)
+                        history['batch_val_accuracy'].append(val_accuracy)
             
-            epoch_loss = loss / samples
-            epoch_accuracy = correct / samples
+            # Record epoch metrics
+            epoch_loss = epoch_loss / samples
+            epoch_accuracy = epoch_correct / samples
             
             history['loss'].append(epoch_loss)
             history['accuracy'].append(epoch_accuracy)
@@ -336,3 +363,4 @@ def create_lenet5_model():
     model.add(Dense(84, activation='tanh'))
     model.add(Dense(10, activation='softmax'))
     return model
+
