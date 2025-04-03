@@ -4,13 +4,12 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix
 
 def plot_metrics(history, implementation_name, save_path=None):
-    plt.figure(figsize=(15, 5))
+    plt.figure(figsize=(12, 5))
     
     if implementation_name == 'tensorflow':
         batch_history = history['batch_history']
-        epoch_history = history['epoch_history']
         
-        plt.subplot(1, 3, 1)
+        plt.subplot(1, 2, 1)
         plt.plot(batch_history['batch'], batch_history['loss'], 'b-', label='Training Loss')
         plt.plot(batch_history['batch'], batch_history['val_loss'], 'r-', label='Validation Loss')
         plt.title('Loss over Training')
@@ -18,24 +17,15 @@ def plot_metrics(history, implementation_name, save_path=None):
         plt.ylabel('Loss')
         plt.legend()
         
-        plt.subplot(1, 3, 2)
+        plt.subplot(1, 2, 2)
         plt.plot(batch_history['batch'], batch_history['accuracy'], 'g-', label='Training Accuracy')
         plt.plot(batch_history['batch'], batch_history['val_accuracy'], 'm-', label='Validation Accuracy')
         plt.title('Accuracy over Training')
         plt.xlabel('Batch')
         plt.ylabel('Accuracy')
         plt.legend()
-        
-        plt.subplot(1, 3, 3)
-        epochs = range(1, len(epoch_history['accuracy']) + 1)
-        plt.plot(epochs, epoch_history['accuracy'], 'g-o', label='Training Accuracy')
-        plt.plot(epochs, epoch_history['val_accuracy'], 'm-o', label='Validation Accuracy')
-        plt.title('Per-Epoch Accuracy')
-        plt.xlabel('Epoch')
-        plt.ylabel('Accuracy')
-        plt.legend()
     else:
-        plt.subplot(1, 3, 1)
+        plt.subplot(1, 2, 1)
         plt.plot(history['batch'], history['batch_loss'], 'b-', label='Training Loss')
         plt.plot(history['batch'], history['batch_val_loss'], 'r-', label='Validation Loss')
         plt.title('Loss over Training')
@@ -43,26 +33,17 @@ def plot_metrics(history, implementation_name, save_path=None):
         plt.ylabel('Loss')
         plt.legend()
         
-        plt.subplot(1, 3, 2)
+        plt.subplot(1, 2, 2)
         plt.plot(history['batch'], history['batch_accuracy'], 'g-', label='Training Accuracy')
         plt.plot(history['batch'], history['batch_val_accuracy'], 'm-', label='Validation Accuracy')
         plt.title('Accuracy over Training')
         plt.xlabel('Batch')
         plt.ylabel('Accuracy')
         plt.legend()
-        
-        plt.subplot(1, 3, 3)
-        epochs = range(1, len(history['accuracy']) + 1)
-        plt.plot(epochs, history['accuracy'], 'g-o', label='Training Accuracy')
-        plt.plot(epochs, history['val_accuracy'], 'm-o', label='Validation Accuracy')
-        plt.title('Per-Epoch Accuracy')
-        plt.xlabel('Epoch')
-        plt.ylabel('Accuracy')
-        plt.legend()
     
     plt.tight_layout()
     if save_path:
-        plt.savefig(f"{save_path}_{implementation_name}_metrics.png")
+        plt.savefig(f"{save_path}/{implementation_name}_metrics.png")
     plt.show()
 
 def plot_confusion_matrix(model, X_test, y_test, implementation_name, save_path=None):
@@ -84,7 +65,7 @@ def plot_confusion_matrix(model, X_test, y_test, implementation_name, save_path=
     plt.ylabel('True')
     
     if save_path:
-        plt.savefig(f"{save_path}_{implementation_name}_confusion.png")
+        plt.savefig(f"{save_path}/{implementation_name}_confusion.png")
     plt.show()
 
 def plot_misclassified(model, X_test, y_test, implementation_name, save_path=None):
@@ -119,7 +100,7 @@ def plot_misclassified(model, X_test, y_test, implementation_name, save_path=Non
     plt.tight_layout(rect=[0, 0, 1, 0.95])
     
     if save_path:
-        plt.savefig(f"{save_path}_{implementation_name}_misclassified.png")
+        plt.savefig(f"{save_path}/{implementation_name}_misclassified.png")
     plt.show()
 
 def visualize_results(tf_model, manual_model, tf_history, manual_history, X_test, y_test, save_path=None):
@@ -130,3 +111,4 @@ def visualize_results(tf_model, manual_model, tf_history, manual_history, X_test
     plot_metrics(manual_history, 'manual', save_path)
     plot_confusion_matrix(manual_model, X_test, y_test, 'manual', save_path)
     plot_misclassified(manual_model, X_test, y_test, 'manual', save_path)
+
