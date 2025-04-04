@@ -292,8 +292,6 @@ class Sequential:
             epoch_correct = 0
             
             for i in range(0, samples, batch_size):
-                print(f"batch {i}")
-
                 batch_counter += 1
                 end = min(i + batch_size, samples)
                 X_batch = X_shuffled[i:end]
@@ -311,9 +309,8 @@ class Sequential:
                 dA = y_pred - y_batch
                 self.backward(dA)
                 self.update_params(learning_rate)
-                
-                # Record metrics every 100 batches
-                if batch_counter % 100 == 0:
+
+                if (batch_counter - 1) % 30 == 0:
                     history['batch_loss'].append(batch_loss)
                     history['batch_accuracy'].append(batch_accuracy)
                     history['batch'].append(batch_counter)

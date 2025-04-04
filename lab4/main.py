@@ -11,7 +11,7 @@ def main():
     tf_learning_rate = 0.001
     
     # Manual implementation hyperparameters
-    manual_epochs = 1
+    manual_epochs = 3
     manual_batch_size = 128
     manual_learning_rate = 0.001
     
