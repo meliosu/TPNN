@@ -6,12 +6,12 @@ from plots import visualize_results
 def main():
     # Configuration for hyperparameters
     # TensorFlow implementation hyperparameters
-    tf_epochs = 3
+    tf_epochs = 6
     tf_batch_size = 128
     tf_learning_rate = 0.001
     
     # Manual implementation hyperparameters
-    manual_epochs = 3
+    manual_epochs = 6
     manual_batch_size = 128
     manual_learning_rate = 0.001
     
