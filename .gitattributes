@@ -1,1 +1,0 @@
-individual_electric/household_power_consumption.csv filter=lfs diff=lfs merge=lfs -text
